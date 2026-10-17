@@ -1731,7 +1731,6 @@
         if (!res.ok) throw new Error("Failed");
         const data = await res.json();
         document.getElementById("conn-dot").classList.remove("offline");
-        document.getElementById("conn-text").textContent = "Welcome, Guest";
         renderStates(data);
       } catch (err) {
         document.getElementById("conn-dot").classList.add("offline");
@@ -1770,6 +1769,19 @@
     function renderStates(data) {
       currentData = data;
       const states = data.states || {};
+
+      // Welcome greeting from input_text.guest_name
+      const guestNameEntity = states["input_text.guest_name"];
+      const rawGuestName =
+        guestNameEntity &&
+        guestNameEntity.state &&
+        guestNameEntity.state !== "unknown" &&
+        guestNameEntity.state !== "unavailable"
+          ? String(guestNameEntity.state).trim()
+          : "";
+      document.getElementById("conn-text").textContent = rawGuestName
+        ? `Welcome, ${rawGuestName}`
+        : "Welcome, Guest";
 
       // Room temperature & humidity
       const tempSensor =

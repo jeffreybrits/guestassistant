@@ -60,6 +60,7 @@ const CONFIG = {
       "light.trees",
     ],
   },
+  guestNameId: "input_text.guest_name",
   climate: {
     thermostatId: "climate.tuinkantoor_thermostat",
     acUnitId: "climate.ac_tuinkantoor",
@@ -101,6 +102,7 @@ const ALLOWED_MUSIC_SPEAKERS = new Set([
 const ALLOWED_ENTITIES = new Set([
   ...CONFIG.officeLights.map((l) => l.id),
   ...CONFIG.gardenGroup.entities,
+  CONFIG.guestNameId,
   CONFIG.climate.thermostatId,
   CONFIG.climate.acUnitId,
   CONFIG.climate.tempSensorId,
