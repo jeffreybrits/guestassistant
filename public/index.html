@@ -1307,15 +1307,291 @@
     .toast.visible {
       transform: translateX(-50%) translateY(0);
     }
+
+    /* Animated Header Guest Greeting */
+    .welcome-pill-trigger {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 9px 3px 6px;
+      margin-left: -6px;
+      border-radius: 999px;
+      transition: background 0.2s ease, transform 0.18s ease;
+    }
+
+    .welcome-pill-trigger:active {
+      transform: scale(0.96);
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .guest-name-shimmer {
+      font-weight: 700;
+      background: linear-gradient(90deg, #fde68a 0%, #f59e0b 35%, #ffffff 50%, #fbbf24 65%, #fde68a 100%);
+      background-size: 220% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: goldTextShimmer 4.5s linear infinite;
+    }
+
+    .wave-emoji {
+      display: inline-block;
+      transform-origin: 70% 70%;
+      animation: gentleWave 2.6s ease-in-out infinite;
+      font-size: 0.92rem;
+    }
+
+    @keyframes goldTextShimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 220% center; }
+    }
+
+    @keyframes gentleWave {
+      0%, 60%, 100% { transform: rotate(0deg); }
+      10% { transform: rotate(14deg); }
+      20% { transform: rotate(-8deg); }
+      30% { transform: rotate(14deg); }
+      40% { transform: rotate(-4deg); }
+      50% { transform: rotate(10deg); }
+    }
+
+    /* Full-Screen Boutique Welcome Animation Overlay */
+    .welcome-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: radial-gradient(circle at 50% 35%, rgba(28, 39, 58, 0.96) 0%, rgba(10, 14, 20, 0.98) 75%);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.55s cubic-bezier(0.16, 1, 0.3, 1), transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(1.03);
+      overflow: hidden;
+    }
+
+    .welcome-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    .welcome-overlay.closing {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96) translateY(-10px);
+    }
+
+    .welcome-ambient-orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(50px);
+      opacity: 0.45;
+      pointer-events: none;
+      animation: floatOrb 6s ease-in-out infinite alternate;
+    }
+
+    .welcome-ambient-orb.orb-1 {
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.45), transparent 70%);
+      top: 15%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .welcome-ambient-orb.orb-2 {
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.35), transparent 70%);
+      bottom: 18%;
+      left: 35%;
+      animation-delay: -3s;
+    }
+
+    @keyframes floatOrb {
+      0% { transform: translate(-50%, -10px) scale(0.95); }
+      100% { transform: translate(-45%, 14px) scale(1.08); }
+    }
+
+    .welcome-card {
+      position: relative;
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(160deg, rgba(35, 46, 64, 0.85), rgba(18, 24, 34, 0.92));
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 28px;
+      padding: 34px 26px 28px;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65), 0 0 40px rgba(245, 158, 11, 0.14);
+      transform: translateY(22px) scale(0.94);
+      opacity: 0;
+      transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .welcome-overlay.active .welcome-card {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .welcome-emblem-wrap {
+      position: relative;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .welcome-emblem-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1.5px solid rgba(245, 158, 11, 0.5);
+      animation: welcomePulseRing 2.4s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+    }
+
+    .welcome-emblem-ring.ring-2 {
+      animation-delay: 0.8s;
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+
+    @keyframes welcomePulseRing {
+      0% { transform: scale(0.85); opacity: 0.9; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+
+    .welcome-emblem {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #0d1117;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 25px rgba(245, 158, 11, 0.45);
+      position: relative;
+      z-index: 2;
+    }
+
+    .welcome-suite-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #fbbf24;
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.5s ease 0.15s;
+    }
+
+    .welcome-overlay.active .welcome-suite-tag {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .welcome-greeting-title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.55s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+    }
+
+    .welcome-overlay.active .welcome-greeting-title {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .welcome-greeting-name {
+      display: block;
+      margin-top: 2px;
+      background: linear-gradient(90deg, #fde68a 0%, #f59e0b 30%, #ffffff 50%, #34d399 75%, #fde68a 100%);
+      background-size: 220% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: goldTextShimmer 3.5s linear infinite;
+    }
+
+    .welcome-subtitle {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.55s ease 0.38s;
+    }
+
+    .welcome-overlay.active .welcome-subtitle {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .welcome-divider {
+      height: 1px;
+      width: 60%;
+      margin: 0 auto 14px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+    }
+
+    .welcome-tap-hint {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
   </style>
 </head>
 <body>
+  <!-- Boutique Welcome Animation Overlay -->
+  <div class="welcome-overlay" id="welcome-overlay" onclick="dismissWelcomeOverlay()">
+    <div class="welcome-ambient-orb orb-1"></div>
+    <div class="welcome-ambient-orb orb-2"></div>
+    <div class="welcome-card">
+      <div class="welcome-emblem-wrap">
+        <div class="welcome-emblem-ring"></div>
+        <div class="welcome-emblem-ring ring-2"></div>
+        <div class="welcome-emblem">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+      </div>
+      <div class="welcome-suite-tag">Garden Suite</div>
+      <div class="welcome-greeting-title">
+        Welcome,
+        <span class="welcome-greeting-name" id="welcome-overlay-name">Guest</span>
+      </div>
+      <p class="welcome-subtitle">Make yourself at home in the Garden Suite</p>
+      <div class="welcome-divider"></div>
+      <div class="welcome-tap-hint">Tap anywhere to enter</div>
+    </div>
+  </div>
+
   <div class="container">
     <!-- Top Header -->
     <header class="header">
       <div class="header-title">
         <h1>Garden Suite</h1>
-        <p><span id="conn-dot" class="status-dot"></span> <span id="conn-text">Welcome, Guest</span></p>
+        <p class="welcome-pill-trigger" onclick="triggerWelcomeOverlay(lastResolvedGuestName || 'Guest')" title="Tap to replay welcome">
+          <span id="conn-dot" class="status-dot"></span>
+          <span id="conn-text">Welcome, <span class="guest-name-shimmer">Guest</span></span>
+          <span class="wave-emoji">👋</span>
+        </p>
       </div>
       <div class="climate-pills">
         <div class="sensor-pill" title="Current Room Temperature">
@@ -1801,6 +2077,44 @@
       return img;
     }
 
+    let hasShownInitialWelcome = false;
+    let lastResolvedGuestName = "";
+    let welcomeOverlayTimer = null;
+
+    function escapeHtmlText(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function triggerWelcomeOverlay(name) {
+      const overlay = document.getElementById("welcome-overlay");
+      const nameEl = document.getElementById("welcome-overlay-name");
+      if (!overlay || !nameEl) return;
+
+      nameEl.textContent = name || "Guest";
+      overlay.classList.remove("closing");
+      overlay.classList.add("active");
+
+      clearTimeout(welcomeOverlayTimer);
+      welcomeOverlayTimer = setTimeout(() => {
+        dismissWelcomeOverlay();
+      }, 2800);
+    }
+
+    function dismissWelcomeOverlay() {
+      const overlay = document.getElementById("welcome-overlay");
+      if (!overlay || !overlay.classList.contains("active")) return;
+      clearTimeout(welcomeOverlayTimer);
+      overlay.classList.add("closing");
+      overlay.classList.remove("active");
+      setTimeout(() => {
+        overlay.classList.remove("closing");
+      }, 550);
+    }
+
     function renderStates(data) {
       currentData = data;
       const states = data.states || {};
@@ -1814,9 +2128,15 @@
         guestNameEntity.state !== "unavailable"
           ? String(guestNameEntity.state).trim()
           : "";
-      document.getElementById("conn-text").textContent = rawGuestName
-        ? `Welcome, ${rawGuestName}`
-        : "Welcome, Guest";
+      const displayGuestName = rawGuestName || "Guest";
+      document.getElementById("conn-text").innerHTML =
+        `Welcome, <span class="guest-name-shimmer">${escapeHtmlText(displayGuestName)}</span>`;
+
+      if (!hasShownInitialWelcome || (rawGuestName && rawGuestName !== lastResolvedGuestName)) {
+        hasShownInitialWelcome = true;
+        lastResolvedGuestName = rawGuestName;
+        triggerWelcomeOverlay(displayGuestName);
+      }
 
       // Room temperature & humidity
       const tempSensor =
