@@ -548,6 +548,32 @@
       border-color: rgba(255, 255, 255, 0.35);
     }
 
+    .door-warning-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 13px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(239, 68, 68, 0.14));
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fde68a;
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.35;
+      animation: fadeSlideIn 0.22s ease;
+    }
+
+    .door-warning-banner.visible {
+      display: flex;
+    }
+
+    .door-warning-banner svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      color: var(--accent-warm);
+    }
+
     /* Music Assistant Card */
     .music-card {
       display: flex;
@@ -1408,6 +1434,15 @@
           </div>
         </div>
 
+        <div class="door-warning-banner" id="climate-door-warning">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          <span id="climate-door-warning-text">Door is open — AC / heating won't turn on until the door is closed.</span>
+        </div>
+
         <div class="climate-dual-grid" id="climate-dual-controls">
           <!-- Low / Heating Setpoint -->
           <div class="setpoint-box low-box" id="box-temp-low">
@@ -1876,7 +1911,57 @@
           highBox.style.opacity = mode === "off" || mode === "heat" ? "0.55" : "1";
         }
 
-        const actionLabel = attrs.hvac_action
+        // Check door sensor (binary_sensor.garden_office_garden_office_door_window)
+        const doorEntity =
+          states["binary_sensor.garden_office_garden_office_door_window"] ||
+          states["sensor.garden_office_garden_office_door_window"];
+        const doorRawState = doorEntity && doorEntity.state ? String(doorEntity.state).toLowerCase() : "";
+        const isDoorOpen = doorRawState === "on" || doorRawState === "open" || doorRawState === "true";
+
+        const effectiveTemp =
+          currentTemp !== undefined && !isNaN(currentTemp)
+            ? Number(currentTemp)
+            : Number(attrs.current_temperature);
+
+        const activeOrAutoPaused =
+          mode !== "off" ||
+          Boolean(attrs.last_hvac_mode) ||
+          String(attrs.hvac_action_reason || "").toLowerCase().includes("open") ||
+          String(attrs.hvac_action_reason || "").toLowerCase().includes("window");
+
+        const shouldHeat =
+          activeOrAutoPaused &&
+          mode !== "cool" &&
+          (!isNaN(effectiveTemp) && effectiveTemp < Number(lowVal) || mode === "heat" || attrs.hvac_action === "heating");
+
+        const shouldCool =
+          activeOrAutoPaused &&
+          mode !== "heat" &&
+          (!isNaN(effectiveTemp) && effectiveTemp > Number(highVal) || mode === "cool" || attrs.hvac_action === "cooling");
+
+        const doorWarningEl = document.getElementById("climate-door-warning");
+        const doorWarningTextEl = document.getElementById("climate-door-warning-text");
+        const showDoorWarning = isDoorOpen && (shouldHeat || shouldCool);
+
+        if (doorWarningEl && doorWarningTextEl) {
+          doorWarningEl.classList.toggle("visible", showDoorWarning);
+          if (showDoorWarning) {
+            if (shouldHeat && !shouldCool) {
+              doorWarningTextEl.textContent =
+                "Garden Office door is open — Heating won't turn on until the door is closed.";
+            } else if (shouldCool && !shouldHeat) {
+              doorWarningTextEl.textContent =
+                "Garden Office door is open — AC won't turn on until the door is closed.";
+            } else {
+              doorWarningTextEl.textContent =
+                "Garden Office door is open — AC / heating won't turn on until the door is closed.";
+            }
+          }
+        }
+
+        const actionLabel = showDoorWarning
+          ? "Paused (Door Open)"
+          : attrs.hvac_action
           ? attrs.hvac_action.charAt(0).toUpperCase() + attrs.hvac_action.slice(1)
           : mode.toUpperCase();
         const roomTempDisplay =
@@ -2200,6 +2285,15 @@
     }
 
     function setClimateMode(mode) {
+      if (mode !== "off" && currentData && currentData.states) {
+        const doorEntity =
+          currentData.states["binary_sensor.garden_office_garden_office_door_window"] ||
+          currentData.states["sensor.garden_office_garden_office_door_window"];
+        const doorRawState = doorEntity && doorEntity.state ? String(doorEntity.state).toLowerCase() : "";
+        if (doorRawState === "on" || doorRawState === "open" || doorRawState === "true") {
+          showToast("Door is open — won't turn on until door is closed");
+        }
+      }
       apiAction({ type: "climate_mode", hvac_mode: mode });
     }
 

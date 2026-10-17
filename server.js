@@ -66,6 +66,7 @@ const CONFIG = {
     acUnitId: "climate.ac_tuinkantoor",
     tempSensorId: "sensor.garden_office_garden_office_temperature_temperature",
     humiditySensorId: "sensor.garden_office_garden_office_temperature_humidity",
+    doorSensorId: "binary_sensor.garden_office_garden_office_door_window",
   },
   tv: {
     mediaPlayerId: "media_player.garden_office_garden_office_tv",
@@ -107,6 +108,8 @@ const ALLOWED_ENTITIES = new Set([
   CONFIG.climate.acUnitId,
   CONFIG.climate.tempSensorId,
   CONFIG.climate.humiditySensorId,
+  CONFIG.climate.doorSensorId,
+  "sensor.garden_office_garden_office_door_window",
   "sensor.garden_office_climate_temperature",
   "sensor.garden_office_climate_humidity",
   CONFIG.tv.mediaPlayerId,
